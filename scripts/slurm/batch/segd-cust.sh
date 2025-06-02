@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --time=4:0:0
-#SBATCH --mem=400GB
+#SBATCH --time=24:0:0
+#SBATCH --mem=490GB
 #SBATCH --gpus-per-node=a100:4
 #SBATCH --cpus-per-task=5
 #SBATCH -o out/slurm/%j.out
@@ -19,4 +19,4 @@ set -euxo pipefail
 apptainer run \
   -C -B $PWD:/bnd -B $SLURM_TMPDIR:/tmpdir --nv --writable-tmpfs \
   "${SIF_FILE}" \
-  bash -c "cd /workdir/ && python segd.py -i '/bnd/${INP_PATH}/images/mosaic_{c}_z{z}.tif' -o '/bnd/${OUT_PATH}' -w '/bnd/${MD_PATH}' -tc '-5.5' -s PolyT -n DAPI -d 70 -b 128 -pt /tmpdir -cx 4096 -cy 4096 -cz 7 -z 0 -z 1 -z 2 -z 3 -z 4 -z 5 -z 6"
+  bash -c "cd /workdir/ && python segd.py -i '/bnd/${INP_PATH}/images/mosaic_{c}_z{z}.tif' -o '/bnd/${OUT_PATH}' -w '/bnd/${MD_PATH}' -c PolyT -n DAPI -b 128 -pt /tmpdir -lx 4096 -ly 4096 -lz 7 -z 0 -z 1 -z 2 -z 3 -z 4 -z 5 -z 6 -ts 0.25"

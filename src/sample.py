@@ -18,11 +18,12 @@ class SampleConf:
             help=(
                 "pattern for input mosaic files, in python format string format."
                 " following patterns assumed present: 'c' (for channel)."
-                " example: 'data_dir/region_0/images/mosaic_{c}_z3.tif'"
+                " example: 'data_dir/region_0/images/mosaic_{c}_z3.tif'."
             ),
         ),
     ]
-    seg_pat: Annotated[str, cappa.Arg(short="-s", help="name of segmentation channel. example: 'PolyT'")]
+    cyt_pat: Annotated[str, cappa.Arg(short="-c", help="name of cytoplasm channel. example: 'PolyT'")]
+    nuc_pat: Annotated[str, cappa.Arg(short="-n", help="name of nuclear channel. example: 'DAPI'")]
     amount: Annotated[int, cappa.Arg(short="-a", help="amount of samples to generate")]
     width: Annotated[int, cappa.Arg(short="-x", help="width of sample images")]
     height: Annotated[int, cappa.Arg(short="-y", help="height of sample images")]
@@ -34,54 +35,50 @@ class SampleConf:
             help=(
                 "pattern for group name assigned to each sample."
                 " following patterns assumed present: 'i' (for channel)."
-                " example: 'z3 - sample: {i}'"
+                " example: 'z3 - sample: {i}'."
             ),
         ),
     ]
-    nuc_pat: Annotated[str | None, cappa.Arg(short="-n", help="")] = None
 
 
 def run_sampling(conf: SampleConf):
-    seg_path = Path(conf.inp_fmt.format(c=conf.seg_pat))
+    cyt_path = Path(conf.inp_fmt.format(c=conf.cyt_pat))
 
-    print(f"reading segementation image from path {seg_path}", flush=True)
-    seg_arr = imread(seg_path, aszarr=False)
+    print(f"reading segementation image from path {cyt_path}", flush=True)
+    cyt_arr = imread(cyt_path, aszarr=False)
 
     # sanity check re: sampling size vs image size
     assert (
-        seg_arr.shape[1] >= conf.width
-    ), f"segmentation image width {seg_arr.shape[1]} is less than provided sample width {conf.width}"
+        cyt_arr.shape[1] >= conf.width
+    ), f"cytoplasm image width {cyt_arr.shape[1]} is less than provided sample width {conf.width}"
     assert (
-        seg_arr.shape[1] >= conf.width
-    ), f"segmentation image height {seg_arr.shape[0]} is less than provided sample height {conf.height}"
+        cyt_arr.shape[1] >= conf.width
+    ), f"cytoplasm image height {cyt_arr.shape[0]} is less than provided sample height {conf.height}"
 
-    nuc_arr = None
-    if conf.nuc_pat is not None:
-        nuc_path = Path(conf.inp_fmt.format(c=conf.nuc_pat))
-        print(f"reading nuclear image from path {nuc_path}", flush=True)
-        nuc_arr = imread(nuc_path, aszarr=False)
-        assert (
-            seg_arr.shape == nuc_arr.shape
-        ), f"segmentation image shape {seg_arr.shape[1]}x{seg_arr.shape[0]} different from nuclear image shape {nuc_arr.shape[1]}x{nuc_arr.shape[0]}"
+    nuc_path = Path(conf.inp_fmt.format(c=conf.nuc_pat))
+    print(f"reading nuclear image from path {nuc_path}", flush=True)
+    nuc_arr = imread(nuc_path, aszarr=False)
+    assert (
+        cyt_arr.shape == nuc_arr.shape
+    ), f"cytoplasm image shape {cyt_arr.shape[1]}x{cyt_arr.shape[0]} different from nuclear image shape {nuc_arr.shape[1]}x{nuc_arr.shape[0]}"
 
     with H5File(conf.out_path, "a") as hf:
         for i in range(conf.amount):
-            min_x = randint(0, seg_arr.shape[1] - conf.width)
-            min_y = randint(0, seg_arr.shape[0] - conf.height)
+            min_x = randint(0, cyt_arr.shape[1] - conf.width)
+            min_y = randint(0, cyt_arr.shape[0] - conf.height)
 
             print(f"n={i}: creating group", flush=True)
             sample_grp = hf.create_group(conf.sample_fmt.format(i=i))
 
-            print(f"n={i}: writing segmentation channel data", flush=True)
+            print(f"n={i}: writing cytoplasm channel data", flush=True)
             sample_grp.create_dataset(
-                "channel: segmentation", data=seg_arr[min_y : (min_y + conf.height), min_x : (min_x + conf.width)]
+                "channel: cytoplasm", data=cyt_arr[min_y : (min_y + conf.height), min_x : (min_x + conf.width)]
             )
 
-            if nuc_arr is not None:
-                print(f"n={i}: writing nuclear channel data", flush=True)
-                sample_grp.create_dataset(
-                    "channel: nuclear", data=nuc_arr[min_y : (min_y + conf.height), min_x : (min_x + conf.width)]
-                )
+            print(f"n={i}: writing nuclear channel data", flush=True)
+            sample_grp.create_dataset(
+                "channel: nuclear", data=nuc_arr[min_y : (min_y + conf.height), min_x : (min_x + conf.width)]
+            )
 
 
 def run():

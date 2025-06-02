@@ -57,7 +57,7 @@ def run_assign(conf: SpotConf):
     tdf = (
         gpd.GeoDataFrame(tdf[["gene", "global_z"]], geometry=gpd.points_from_xy(tdf["global_x"], tdf["global_y"]))
         .rename_geometry("coords")
-        .reset_index(names="index_transcript")  # pyright: ignore
+        .reset_index(names="index_transcript")
     )
 
     bbox_minx, bbox_miny, bbox_maxx, bbox_maxy = tdf.total_bounds
@@ -80,12 +80,23 @@ def run_assign(conf: SpotConf):
     )
     if conf.flatten:
         print("running spatial join between transcripts and spots", flush=True)
-        jdf = sjts(tdf, sdf)
+        jdf = sjts(
+            tdf,  # pyright: ignore
+            sdf,
+        )
     else:
         jdf = pd.DataFrame()
         for z, tdf_slice in tdf.groupby("global_z"):
             print(f"z={z}: running spatial join between transcripts and spots", flush=True)
-            jdf = pd.concat([jdf, sjts(tdf_slice, sdf).assign(z=z)])
+            jdf = pd.concat(
+                [
+                    jdf,
+                    sjts(
+                        tdf_slice,  # pyright: ignore
+                        sdf,
+                    ).assign(z=z),
+                ]
+            )
 
     # sanity check assignments
     assert jdf.index.size == tdf.index.size, "bug: not all transcripts were assigned a spot"

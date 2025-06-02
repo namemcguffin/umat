@@ -9,7 +9,7 @@ env UV_COMPILE_BYTECODE=1
 run ["uv", "venv", "-p", "3.12", ".venv"]
 copy ./requirements.txt requirements.txt
 run ["uv", "pip", "install", "-r", "requirements.txt"]
-run ["/.venv/bin/python", "-c", "from cellpose import models; models.Cellpose(model_type=\"cyto3\"); models.Cellpose(model_type=\"nuclei\")"]
+run ["/.venv/bin/python", "-c", "from cellpose import models; models.CellposeModel()"]
 
 from base
 copy --from=py-base /root/.local/share/uv /root/.local/share/uv

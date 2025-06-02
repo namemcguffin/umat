@@ -19,4 +19,4 @@ set -euxo pipefail
 apptainer run \
   -C -B $PWD:/bnd -B $SLURM_TMPDIR:/tmpdir --writable-tmpfs \
   "${SIF_FILE}" \
-  bash -c "cd /workdir && python preview.py -i '/bnd/${INP_PATH}/images/mosaic_{c}_z{z}.tif' -s 'PolyT' -n 'DAPI' -z '${Z_SLICE}' -m '/bnd/${NPY_PATH}' -o '/bnd/${OUT_PATH}'"
+  bash -c "cd /workdir && python preview.py -i '/bnd/${INP_PATH}/images/mosaic_{c}_z{z}.tif' -c 'PolyT' -n 'DAPI' -z '${Z_SLICE}' -m '/bnd/${NPY_PATH}' -o '/bnd/${OUT_PATH}'"

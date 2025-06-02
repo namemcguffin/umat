@@ -1,6 +1,6 @@
 anndata
 cappa
-cellpose
+cellpose==4.*
 dask[complete]
 dask-cuda==25.2.0
 dask-image

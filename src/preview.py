@@ -15,16 +15,16 @@ class PreviewConf:
         str,
         cappa.Arg(
             short="-i",
-            help="pattern for input mosaic files, in python format string format. "
-            "following patterns assumed present: 'c' (for channel) and 'z' (for z stack level). "
-            "example: 'data_dir/region_0/images/mosaic_{c}_z{z}.tif'",
+            help="pattern for input mosaic files, in python format string format."
+            " following patterns assumed present: 'c' (for channel) and 'z' (for z stack level)."
+            " example: 'data_dir/region_0/images/mosaic_{c}_z{z}.tif'",
         ),
     ]
-    seg_pat: Annotated[str, cappa.Arg(short="-s", help="name of segmentation channel\nexample: 'PolyT'")]
-    seg_masks: Annotated[Path, cappa.Arg(short="-", help="input masks npy file path")]
-    masks_z: Annotated[int, cappa.Arg(short="-m", help="z slice to consider for preview generation")]
+    cyt_pat: Annotated[str, cappa.Arg(short="-c", help="name of cytoplasm channel\nexample: 'PolyT'")]
+    nuc_pat: Annotated[str, cappa.Arg(short="-n", help="name of nuclear channel\nexample: 'DAPI'")]
+    seg_masks: Annotated[Path, cappa.Arg(short="-m", help="input masks npy file path")]
+    masks_z: Annotated[int, cappa.Arg(short="-z", help="z slice to consider for preview generation")]
     out_path: Annotated[Path, cappa.Arg(short="-o", help="output image showing segmentation preview path")]
-    nuc_pat: Annotated[str | None, cappa.Arg(short="-n", help="name of optional nuclear channel\nexample: 'DAPI'")] = None
     blend: Annotated[float, cappa.Arg(short="-b", help="blend value between masks and channel image")] = 0.5
 
 
@@ -35,22 +35,17 @@ def rescale_uint8(arr: np.ndarray) -> np.ndarray:
 def run_preview(conf: PreviewConf):
     assert 0 <= conf.blend <= 1, ValueError("alpha blend value must be between 0 and 1")
 
-    seg_path = Path(conf.inp_fmt.format(c=conf.seg_pat, z=conf.masks_z))
-    if conf.nuc_pat is None:
-        print(f"building blue channel using {seg_path}", flush=True)
-        blue = imread(seg_path, aszarr=False)
-        print("leaving green channel empty since no nuclear channel was provided", flush=True)
-        green = np.zeros(blue.shape).astype(blue.dtype)
-    else:
-        nuc_path = Path(conf.inp_fmt.format(c=conf.nuc_pat, z=conf.masks_z))
-        print(f"building green channel using {seg_path}", flush=True)
-        green = imread(seg_path, aszarr=False)
-        print(f"building blue channel using {nuc_path}", flush=True)
-        blue = imread(nuc_path, aszarr=False)
+    cyt_path = Path(conf.inp_fmt.format(c=conf.cyt_pat, z=conf.masks_z))
+    nuc_path = Path(conf.inp_fmt.format(c=conf.nuc_pat, z=conf.masks_z))
 
-        assert blue.dtype == green.dtype, ValueError(
-            f"datatype for segmentation image ({green.dtype}) and nuclear image ({blue.dtype}) must be identical"
-        )
+    print(f"building green channel using {cyt_path}", flush=True)
+    green = imread(cyt_path, aszarr=False)
+    print(f"building blue channel using {nuc_path}", flush=True)
+    blue = imread(nuc_path, aszarr=False)
+
+    assert blue.dtype == green.dtype, ValueError(
+        f"datatype for cytoplasm image ({green.dtype}) and nuclear image ({blue.dtype}) must be identical"
+    )
 
     arr_c = np.load(conf.seg_masks, mmap_mode="r")
 

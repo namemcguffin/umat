@@ -17,9 +17,7 @@ class AssignConf:
         cappa.Arg(
             short="-i",
             action=cappa.ArgAction("append"),
-            help=(
-                "input feather file(s) containing cell geometries. can be provided multiple times, all tables will be concatenated together before processing"
-            ),
+            help="input feather file(s) containing cell geometries. can be provided multiple times, all tables will be concatenated together before processing.",
         ),
     ]
     ad_path: Annotated[Path, cappa.Arg(short="-a", help="input detected transcripts CSV file path")]

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --time=2:0:0
-#SBATCH --mem=48GB
+#SBATCH --mem=320GB
 #SBATCH --cpus-per-task=1
 #SBATCH -o out/slurm/%j.out
 #SBATCH -e out/slurm/%j.err

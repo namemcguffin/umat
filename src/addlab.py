@@ -24,10 +24,10 @@ def run_addlab(conf: AddLabelConf):
         grp = hf[conf.sample]
         if not isinstance(grp, Group):
             raise ValueError(f"entry '{conf.sample}' in provided hdf5 file {conf.hdf5_path} is not a group.")
-        seg = grp["channel: segmentation"]
+        seg = grp["channel: cytoplasm"]
         if not isinstance(seg, Dataset):
             raise ValueError(
-                f"entry 'sample: {conf.sample}/channel: segmentation' in provided hdf5 file {conf.hdf5_path} is not a dataset."
+                f"entry 'sample: {conf.sample}/channel: cytoplasm' in provided hdf5 file {conf.hdf5_path} is not a dataset."
             )
 
         if conf.lab_path.suffix in (".roi", ".zip"):

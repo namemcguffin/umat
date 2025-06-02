@@ -20,7 +20,7 @@ mkdir -p "${IMG_DIR}"
 
 SEG_ID="$(sbatch --parsable --account="${ACCOUNT}" \
   --export="SIF_FILE=${SIF_FILE},INP_PATH=${INP_DIR},OUT_PATH=${NPY_PATH}" \
-  batch/segd-cyto.sh \
+  batch/segd.sh \
 )"
 
 BND_DEP_STR='afterok'
