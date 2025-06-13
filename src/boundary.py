@@ -9,6 +9,7 @@ import cappa
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import zarr
 from shapely import MultiPolygon, Polygon, union_all
 from shapely.affinity import affine_transform
 from shapely.validation import explain_validity
@@ -17,7 +18,7 @@ from skimage.measure import find_contours, regionprops_table
 
 @dataclass
 class BoundaryConf:
-    inp_path: Annotated[Path, cappa.Arg(short="-i", help="input masks npy file path")]
+    inp_path: Annotated[Path, cappa.Arg(short="-i", help="input masks file path (npy or zarr)")]
     out_path: Annotated[
         Path, cappa.Arg(short="-o", help="output feather file path containing cell geometries (geopandas format)")
     ]
@@ -117,8 +118,15 @@ def mk_table(z_slice: np.ndarray, z_idx: int, tfm: list[float], ncpus: int) -> p
 
 
 def mk_get(inp_path: Path) -> tuple[int, Callable[[int], np.ndarray]]:
-    arr_mmap = np.load(inp_path, mmap_mode="r")
-    return arr_mmap.shape[0], lambda z: np.copy(arr_mmap[z, :, :])
+    if inp_path.suffix == ".zarr":
+        arr = zarr.open(str(inp_path), mode="r")
+        assert isinstance(arr, zarr.Array), f"expected input file {inp_path} to contain zarr.Array, got {type(arr)}"
+        get_fn = lambda z: arr[z, :, :]  # noqa: E731
+    else:
+        arr = np.load(inp_path, mmap_mode="r")
+        get_fn = lambda z: np.copy(arr[z, :, :])  # noqa: E731
+
+    return arr.shape[0], get_fn
 
 
 def run_boundaries(conf: BoundaryConf):

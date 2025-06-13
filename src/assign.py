@@ -7,7 +7,7 @@ import cappa
 import geopandas as gpd
 import pandas as pd
 from anndata import AnnData
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 
 @dataclass
@@ -87,8 +87,8 @@ def run_assign(conf: AssignConf):
     ad.obsm["blanks"] = pd.DataFrame(ad[:, blank_filter].X, index=ad.obs_names, columns=ad.var_names[blank_filter])
     ad = ad[:, ~blank_filter].copy()
 
-    # switch to CSR matrix data storage
-    ad.X = csr_matrix(ad.X)
+    # switch to CSR matrix for data storage
+    ad.X = csr_array(ad.X)
 
     print(f"saving anndata to {conf.ad_path}", flush=True)
     ad.write_h5ad(conf.ad_path)

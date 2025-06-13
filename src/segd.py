@@ -5,6 +5,7 @@ from inspect import signature
 from os import mkdir
 from os.path import basename
 from pathlib import Path
+from shutil import copytree
 from typing import Annotated
 
 import cappa
@@ -59,7 +60,7 @@ class DistributedSegConf:
             help="z slices to consider for segmentation. can be provided multiple times to specify multiple slices.",
         ),
     ]
-    out_path: Annotated[Path, cappa.Arg(short="-o", help="path for output masks npy file")]
+    out_path: Annotated[Path, cappa.Arg(short="-o", help="path for output masks file (npy or zarr)")]
     tempdir: Annotated[Path, cappa.Arg(short="-pt", help="path to temporary directory")]
     diameter: Annotated[
         int | None,
@@ -171,11 +172,14 @@ def run_segd(conf: DistributedSegConf, cluster: LocalCUDACluster):
     del nuc_paths
     collect()
 
-    with open(conf.out_path, "wb") as nf:
-        np.save(
-            nf,
-            masks[:],
-        )
+    if conf.out_path.suffix == ".zarr":
+        copytree(conf.tempdir / "out.zarr", conf.out_path)
+    else:
+        with open(conf.out_path, "wb") as nf:
+            np.save(
+                nf,
+                masks[:],
+            )
 
 
 def run():

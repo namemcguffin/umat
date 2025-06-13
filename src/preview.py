@@ -5,6 +5,7 @@ from typing import Annotated
 
 import cappa
 import numpy as np
+import zarr
 from PIL import Image
 from tifffile import imread
 
@@ -22,7 +23,7 @@ class PreviewConf:
     ]
     cyt_pat: Annotated[str, cappa.Arg(short="-c", help="name of cytoplasm channel\nexample: 'PolyT'")]
     nuc_pat: Annotated[str, cappa.Arg(short="-n", help="name of nuclear channel\nexample: 'DAPI'")]
-    seg_masks: Annotated[Path, cappa.Arg(short="-m", help="input masks npy file path")]
+    seg_masks: Annotated[Path, cappa.Arg(short="-m", help="input masks file path (npy or zarr)")]
     masks_z: Annotated[int, cappa.Arg(short="-z", help="z slice to consider for preview generation")]
     out_path: Annotated[Path, cappa.Arg(short="-o", help="output image showing segmentation preview path")]
     blend: Annotated[float, cappa.Arg(short="-b", help="blend value between masks and channel image")] = 0.5
@@ -47,7 +48,11 @@ def run_preview(conf: PreviewConf):
         f"datatype for cytoplasm image ({green.dtype}) and nuclear image ({blue.dtype}) must be identical"
     )
 
-    arr_c = np.load(conf.seg_masks, mmap_mode="r")
+    if conf.seg_masks.suffix == ".zarr":
+        arr_c = zarr.open(str(conf.seg_masks), mode="r")
+        assert isinstance(arr_c, zarr.Array), f"expected input file {conf.seg_masks} to contain zarr.Array, got {type(arr_c)}"
+    else:
+        arr_c = np.load(conf.seg_masks, mmap_mode="r")
 
     print(f"building red channel using masks, loaded from {conf.seg_masks} (z={conf.masks_z})", flush=True)
     red = ((arr_c[conf.masks_z, :, :] != 0) * 255).astype(np.uint8)
