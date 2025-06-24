@@ -1,0 +1,26 @@
+[project]
+name = "umat"
+version = "0.1"
+dependencies = [
+    "anndata",
+    "cappa",
+    "cellpose==4.*",
+    "dask[complete]",
+    "dask-cuda==25.2.0",
+    "dask-image",
+    "dask-jobqueue",
+    "geopandas",
+    "h5py",
+    "numpy",
+    "pandas",
+    "pillow",
+    "roifile",
+    "scikit-image",
+    "scipy",
+    "shapely",
+    "tifffile",
+    "zarr<3",
+]
+
+[project.scripts]
+umat = "umat:__main__.main"
