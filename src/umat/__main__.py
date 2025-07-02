@@ -29,21 +29,21 @@ def main():
 
     match conf.command:
         case AddLabelConf():
-            from .tools.addlab import run_addlab as run
+            from .tools.addlab import run
         case AssignConf():
-            from .tools.assign import run_assign as run
+            from .tools.assign import run
         case BoundaryConf():
-            from .tools.boundary import run_boundaries as run
+            from .tools.boundary import run
         case PreviewConf():
-            from .tools.preview import run_preview as run
+            from .tools.preview import run
         case RetrainConf():
-            from .tools.retrain import run_retrain as run
+            from .tools.retrain import run
         case SampleConf():
-            from .tools.sample import run_sampling as run
+            from .tools.sample import run
         case DistributedSegConf():
-            from .tools.retrain import run_retrain as run
+            from .tools.retrain import run
         case SpotConf():
-            from .tools.spot import run_spot as run
+            from .tools.spot import run
 
     run(conf.command)  # pyright: ignore
 

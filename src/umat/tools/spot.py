@@ -28,7 +28,7 @@ def sjts(tdf: gpd.GeoDataFrame, sdf: gpd.GeoDataFrame) -> pd.DataFrame:
     )
 
 
-def run_spot(conf: SpotConf):
+def run(conf: SpotConf):
     print(f"loading detected transcripts table from {conf.dt_path}", flush=True)
     tdf = pd.read_csv(
         conf.dt_path,

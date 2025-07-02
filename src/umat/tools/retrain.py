@@ -16,7 +16,7 @@ def get_ds(grp: Group, key: str) -> np.ndarray:
     return o[:]
 
 
-def run_retrain(conf: RetrainConf):
+def run(conf: RetrainConf):
     logger_setup()
 
     if conf.model_path is None:

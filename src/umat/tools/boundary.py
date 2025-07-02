@@ -118,7 +118,7 @@ def mk_get(inp_path: Path) -> tuple[int, Callable[[int], np.ndarray]]:
     return arr.shape[0], get_fn
 
 
-def run_boundaries(conf: BoundaryConf):
+def run(conf: BoundaryConf):
     print(f"loading micron to pixel transform from {conf.mp_path}", flush=True)
     tfm = np.linalg.inv(np.genfromtxt(conf.mp_path))[[0, 0, 1, 1, 0, 1], [0, 1, 0, 1, 2, 2]].tolist()
 

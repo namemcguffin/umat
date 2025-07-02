@@ -1,19 +1,14 @@
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Annotated
-
-import cappa
+import numpy as np
+from h5py import Dataset
+from h5py import File as H5File
+from h5py import Group
+from roifile import ImagejRoi, roiread
+from skimage.draw import polygon2mask
 
 from ..conf import AddLabelConf
 
 
-def run_addlab(conf: AddLabelConf):
-    import numpy as np
-    from h5py import Dataset
-    from h5py import File as H5File
-    from h5py import Group
-    from roifile import ImagejRoi, roiread
-    from skimage.draw import polygon2mask
+def run(conf: AddLabelConf):
 
     with H5File(conf.hdf5_path, "r+") as hf:
         grp = hf[conf.sample]
@@ -45,5 +40,6 @@ def run_addlab(conf: AddLabelConf):
         else:
             raise ValueError(f"provided label file {conf.lab_path} is not of supported format")
 
+        grp.create_dataset("labels", data=labs)
         grp.create_dataset("labels", data=labs)
         grp.create_dataset("labels", data=labs)

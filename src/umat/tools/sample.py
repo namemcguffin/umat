@@ -7,7 +7,7 @@ from tifffile import imread
 from ..conf import SampleConf
 
 
-def run_sampling(conf: SampleConf):
+def run(conf: SampleConf):
     cyt_path = Path(conf.inp_fmt.format(c=conf.cyt_pat))
 
     print(f"reading segementation image from path {cyt_path}", flush=True)

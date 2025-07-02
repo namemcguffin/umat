@@ -6,7 +6,7 @@ from scipy.sparse import csr_array
 from ..conf import AssignConf
 
 
-def run_assign(conf: AssignConf):
+def run(conf: AssignConf):
     print(f"loading cell boundary tables from {conf.b_paths}", flush=True)
     cdf = gpd.GeoDataFrame(pd.concat(map(gpd.read_feather, conf.b_paths), ignore_index=True), geometry="coords")
 

@@ -12,7 +12,7 @@ def rescale_uint8(arr: np.ndarray) -> np.ndarray:
     return (((arr - np.min(arr)) / np.ptp(arr)) * 255).round().astype(np.uint8)
 
 
-def run_preview(conf: PreviewConf):
+def run(conf: PreviewConf):
     assert 0 <= conf.blend <= 1, ValueError("alpha blend value must be between 0 and 1")
 
     cyt_path = Path(conf.inp_fmt.format(c=conf.cyt_pat, z=conf.masks_z))

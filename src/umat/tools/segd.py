@@ -33,7 +33,7 @@ def wgbc(*args, **kwargs):
 distributed_segmentation.get_block_crops = wgbc
 
 
-def run_segd(conf: DistributedSegConf):
+def run(conf: DistributedSegConf):
 
     logger_setup()
 
