@@ -1,6 +1,6 @@
 [project]
 name = "umat"
-version = "0.1"
+version = "0.1.0"
 dependencies = [
     "anndata",
     "cappa",
@@ -21,6 +21,10 @@ dependencies = [
     "tifffile",
     "zarr<3",
 ]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
 
 [project.scripts]
 umat = "umat:__main__.main"
