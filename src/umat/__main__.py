@@ -29,23 +29,29 @@ def main():
 
     match conf.command:
         case AddLabelConf():
-            from .tools.addlab import run
+            from .tools.addlab import run  # fmt: skip
+            run(conf.command)
         case AssignConf():
-            from .tools.assign import run
+            from .tools.assign import run  # fmt: skip
+            run(conf.command)
         case BoundaryConf():
-            from .tools.boundary import run
+            from .tools.boundary import run  # fmt: skip
+            run(conf.command)
         case PreviewConf():
-            from .tools.preview import run
+            from .tools.preview import run  # fmt: skip
+            run(conf.command)
         case RetrainConf():
-            from .tools.retrain import run
+            from .tools.retrain import run  # fmt: skip
+            run(conf.command)
         case SampleConf():
-            from .tools.sample import run
+            from .tools.sample import run  # fmt: skip
+            run(conf.command)
         case DistributedSegConf():
-            from .tools.retrain import run
+            from .tools.segd import run  # fmt: skip
+            run(conf.command)
         case SpotConf():
-            from .tools.spot import run
-
-    run(conf.command)  # pyright: ignore
+            from .tools.spot import run  # fmt: skip
+            run(conf.command)
 
 
 if __name__ == "__main__":
