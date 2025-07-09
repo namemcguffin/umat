@@ -125,10 +125,7 @@ def run(conf: DistributedSegConf):
         copytree(conf.tempdir / "out.zarr", conf.out_path)
     else:
         with open(conf.out_path, "wb") as nf:
-            np.save(
-                nf,
-                masks[:],
-            )
+            np.save(nf, masks[:])
 
     # don't fail from timeout errors on client/cluster close
     try:
