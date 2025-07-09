@@ -49,5 +49,3 @@ def run(conf: PreviewConf):
 
     print(f"saving output image to {conf.out_path}", flush=True)
     img.save(conf.out_path)
-    img.save(conf.out_path)
-    img.save(conf.out_path)

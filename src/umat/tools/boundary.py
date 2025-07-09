@@ -132,5 +132,3 @@ def run(conf: BoundaryConf):
 
     print(f"saving cell table to {conf.out_path}", flush=True)
     gpd.GeoDataFrame(cdf, geometry="coords").to_feather(conf.out_path)
-    gpd.GeoDataFrame(cdf, geometry="coords").to_feather(conf.out_path)
-    gpd.GeoDataFrame(cdf, geometry="coords").to_feather(conf.out_path)

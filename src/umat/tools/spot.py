@@ -128,4 +128,3 @@ def run(conf: SpotConf):
 
     print(f"saving anndata to {conf.ad_path}", flush=True)
     ad.write_h5ad(conf.ad_path)
-    ad.write_h5ad(conf.ad_path)

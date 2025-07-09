@@ -139,5 +139,3 @@ def run(conf: DistributedSegConf):
         cluster.client.close()  # pyright: ignore
     except TimeoutError:
         print("timeout error on client close", flush=True)
-        print("timeout error on client close", flush=True)
-        print("timeout error on client close", flush=True)

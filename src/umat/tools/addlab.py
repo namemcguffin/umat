@@ -41,5 +41,3 @@ def run(conf: AddLabelConf):
             raise ValueError(f"provided label file {conf.lab_path} is not of supported format")
 
         grp.create_dataset("labels", data=labs)
-        grp.create_dataset("labels", data=labs)
-        grp.create_dataset("labels", data=labs)
