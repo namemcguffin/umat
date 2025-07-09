@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Annotated
 
@@ -48,6 +48,58 @@ class BoundaryConf:
         ),
     ] = None
     ncpus: Annotated[int, cappa.Arg(short="-j", help="amount of CPU cores to use")] = 1
+
+
+@cappa.command(name="signals")
+@dataclass
+class SignalsConf:
+    inp_fmt: Annotated[
+        str,
+        cappa.Arg(
+            short="-i",
+            help="pattern for input mosaic files, in python format string format."
+            " following patterns assumed present: 'c' (for channel) and 'z' (for z stack level)."
+            " example: 'data_dir/region_0/images/mosaic_{c}_z{z}.tif'",
+        ),
+    ]
+    channels: Annotated[
+        list[str],
+        cappa.Arg(
+            short="-c", action=cappa.ArgAction("append"), help="name of channels to load and compute signal statistics from"
+        ),
+    ]
+    masks_path: Annotated[Path, cappa.Arg(short="-m", help="masks file path (npy or zarr)")]
+    out_path: Annotated[Path, cappa.Arg(short="-o", help="output TSV file path containing aggreggated cell stats")]
+    props: Annotated[
+        list[str],
+        cappa.Arg(
+            short="-p",
+            action=cappa.ArgAction("append"),
+            help="name of properties to calculate (see `skimage.measure.regionprops` for options)",
+        ),
+    ] = field(default_factory=lambda: ["area", "intensity_mean"])
+    z_subset: Annotated[
+        list[int] | None,
+        cappa.Arg(
+            short="-z",
+            action=cappa.ArgAction("append"),
+            help="z slice(s) to consider, other slices will be ignored",
+        ),
+    ] = None
+
+
+@cappa.command(name="fromproseg")
+@dataclass
+class FromProsegConf:
+    geojson_path: Annotated[
+        Path,
+        cappa.Arg(short="-i", help="path to proseg generated layer-resolved geojson output file"),
+    ]
+    x_shape: Annotated[int, cappa.Arg(short="-x", help="width of output masks, should match mosaic image width in pixels")]
+    y_shape: Annotated[int, cappa.Arg(short="-y", help="height of output masks, should match mosaic image height in pixels")]
+    mp_path: Annotated[Path, cappa.Arg(short="-m", help="mosaic micron to mosaic pixel transform file path")]
+    out_path: Annotated[Path, cappa.Arg(short="-o", help="path for output masks file (npy or zarr)")]
+    z_slice: Annotated[int | None, cappa.Arg(short="-z", help="specify just one z-slice to run mask generation on")] = None
 
 
 @cappa.command(name="preview")

@@ -7,9 +7,11 @@ from .conf import (
     AssignConf,
     BoundaryConf,
     DistributedSegConf,
+    FromProsegConf,
     PreviewConf,
     RetrainConf,
     SampleConf,
+    SignalsConf,
     SpotConf,
 )
 
@@ -18,7 +20,16 @@ from .conf import (
 @dataclass
 class Umat:
     command: cappa.Subcommands[
-        AddLabelConf | AssignConf | BoundaryConf | PreviewConf | RetrainConf | SampleConf | DistributedSegConf | SpotConf
+        AddLabelConf
+        | AssignConf
+        | BoundaryConf
+        | DistributedSegConf
+        | FromProsegConf
+        | PreviewConf
+        | RetrainConf
+        | SampleConf
+        | SignalsConf
+        | SpotConf
     ]
 
 
@@ -37,6 +48,12 @@ def main():
         case BoundaryConf():
             from .tools.boundary import run  # fmt: skip
             run(conf.command)
+        case DistributedSegConf():
+            from .tools.segd import run  # fmt: skip
+            run(conf.command)
+        case FromProsegConf():
+            from .tools.from_proseg import run  # fmt: skip
+            run(conf.command)
         case PreviewConf():
             from .tools.preview import run  # fmt: skip
             run(conf.command)
@@ -46,8 +63,8 @@ def main():
         case SampleConf():
             from .tools.sample import run  # fmt: skip
             run(conf.command)
-        case DistributedSegConf():
-            from .tools.segd import run  # fmt: skip
+        case SignalsConf():
+            from .tools.signals import run  # fmt: skip
             run(conf.command)
         case SpotConf():
             from .tools.spot import run  # fmt: skip

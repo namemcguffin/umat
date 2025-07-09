@@ -27,11 +27,11 @@ def run(conf: AddLabelConf):
 
             masks = roiread(conf.lab_path)
             if isinstance(masks, ImagejRoi):
-                iter = enumerate(masks.coordinates(multi=True))
+                masks_iter = enumerate(masks.coordinates(multi=True))
             else:
-                iter = enumerate(e for r in masks for e in r.coordinates(multi=True))
-            labs = p2m(next(iter)[1])
-            for i, e in iter:
+                masks_iter = enumerate(e for r in masks for e in r.coordinates(multi=True))
+            labs = p2m(next(masks_iter)[1])
+            for i, e in masks_iter:
                 curr_mask = (p2m(e) * (i + 1)).astype(int)
                 # handle overlapping masks by overriding with new mask where masks overlap
                 labs = (labs * (curr_mask == 0)) + curr_mask
