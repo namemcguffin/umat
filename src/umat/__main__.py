@@ -2,34 +2,23 @@ from dataclasses import dataclass
 
 import cappa
 
-from .conf import (
-    AddLabelConf,
-    AssignConf,
-    BoundaryConf,
-    DistributedSegConf,
-    FromProsegConf,
-    PreviewConf,
-    RetrainConf,
-    SampleConf,
-    SignalsConf,
-    SpotConf,
-)
+from . import conf as c
 
 
 @cappa.command(name="umat")
 @dataclass
 class Umat:
     command: cappa.Subcommands[
-        AddLabelConf
-        | AssignConf
-        | BoundaryConf
-        | DistributedSegConf
-        | FromProsegConf
-        | PreviewConf
-        | RetrainConf
-        | SampleConf
-        | SignalsConf
-        | SpotConf
+        c.AddLabelConf
+        | c.AssignConf
+        | c.BoundaryConf
+        | c.DistributedSegConf
+        | c.FromProsegConf
+        | c.PreviewConf
+        | c.RetrainConf
+        | c.SampleConf
+        | c.SignalsConf
+        | c.SpotConf
     ]
 
 
@@ -39,34 +28,34 @@ def main():
 
     # fmt: off
     match conf.command:
-        case AddLabelConf():
+        case c.AddLabelConf():
             from .tools.addlab import run
             run(conf.command)
-        case AssignConf():
+        case c.AssignConf():
             from .tools.assign import run
             run(conf.command)
-        case BoundaryConf():
+        case c.BoundaryConf():
             from .tools.boundary import run
             run(conf.command)
-        case DistributedSegConf():
+        case c.DistributedSegConf():
             from .tools.segd import run
             run(conf.command)
-        case FromProsegConf():
+        case c.FromProsegConf():
             from .tools.from_proseg import run
             run(conf.command)
-        case PreviewConf():
+        case c.PreviewConf():
             from .tools.preview import run
             run(conf.command)
-        case RetrainConf():
+        case c.RetrainConf():
             from .tools.retrain import run
             run(conf.command)
-        case SampleConf():
+        case c.SampleConf():
             from .tools.sample import run
             run(conf.command)
-        case SignalsConf():
+        case c.SignalsConf():
             from .tools.signals import run
             run(conf.command)
-        case SpotConf():
+        case c.SpotConf():
             from .tools.spot import run
             run(conf.command)
     # fmt:on
