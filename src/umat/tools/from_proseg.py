@@ -23,9 +23,11 @@ def r2m(cell: int | np.integer, geom: shp.MultiPolygon, shape: tuple[int, int]) 
 def process_zslice(df: pd.DataFrame, shape: tuple[int, int]) -> np.ndarray:
     row_iter = df.itertuples()
     row = next(row_iter)
-    # for type cheker
+
+    # for type checker
     assert isinstance(row.cell, int | np.integer)
     assert isinstance(row.geometry, shp.MultiPolygon)
+
     masks = r2m(row.cell, row.geometry, shape)
 
     for row in row_iter:

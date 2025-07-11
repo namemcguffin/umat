@@ -22,7 +22,7 @@ def process_cell(
 ) -> tuple[np.int64, MultiPolygon | None]:
     label, min_r, min_c, max_r, max_c = props
 
-    # adding padding for find_countours
+    # adding padding for find_contours
     lab_arr = np.pad(
         z_slice[min_r:max_r, min_c:max_c] == label,
         1,
@@ -42,7 +42,7 @@ def process_cell(
         polys = [
             Polygon(
                 (arr + [min_r, min_c])[
-                    :,  #    inversion of second axis necessary since skimage.measure.find_contourds returns array of (row,column) points,
+                    :,  #    inversion of second axis necessary since skimage.measure.find_contours returns array of (row,column) points,
                     ::-1,  # which corresponds to (y,x) points, but shapely.Polygon constructor expects an array of (x,y) points
                 ],
             ).buffer(0)
