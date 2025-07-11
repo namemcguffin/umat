@@ -48,8 +48,10 @@ def process_zslice(df: pd.DataFrame, shape: tuple[int, int]) -> np.ndarray:
 
 
 def run(conf: FromProsegConf):
+    print(f"loading micron to pixel transform from {conf.mp_path}", flush=True)
     tfm = np.genfromtxt(conf.mp_path)[[0, 0, 1, 1, 0, 1], [0, 1, 0, 1, 2, 2]].tolist()
 
+    print(f"loading proseg-generated cell polygons from {conf.geojson_path}", flush=True)
     gdf = gpd.read_file(
         gzip.open(conf.geojson_path) if conf.geojson_path.suffix == ".gz" else conf.geojson_path,
         use_arrow=True,
@@ -63,15 +65,19 @@ def run(conf: FromProsegConf):
     # crop to size of image
     gdf = gdf[gdf.within(shp.box(0, 0, conf.x_shape, conf.y_shape))]
 
-    masks = (
-        np.stack(
-            [process_zslice(gdf_slice, (conf.y_shape, conf.x_shape)) for _, gdf_slice in gdf.groupby("layer", sort=True)],
-            axis=0,
-        )
-        if conf.z_slice is None
-        else process_zslice(gdf, (conf.y_shape, conf.x_shape))
-    )
+    if conf.z_slice is None:
+        stacks = []
+        for i, gdf_slice in gdf.groupby("layer", sort=True):
+            print(f"z={i}: computing masks", flush=True)
+            stacks.append(process_zslice(gdf_slice, (conf.y_shape, conf.x_shape)))
 
+        print(f"generating 3D stack from {len(stacks)} detected z-slices", flush=True)
+        masks = np.stack(stacks, axis=0)
+    else:
+        print(f"z={conf.z_slice}: computing masks", flush=True)
+        masks = process_zslice(gdf, (conf.y_shape, conf.x_shape))
+
+    print(f"saving {'3' if conf.z_slice is None else '2'}D masks file to {conf.out_path}", flush=True)
     if conf.out_path.suffix == ".zarr":
         zarr.save_array(str(conf.out_path), masks)
     else:

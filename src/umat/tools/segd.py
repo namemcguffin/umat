@@ -120,6 +120,7 @@ def run(conf: DistributedSegConf):
     del nuc_paths
     collect()
 
+    print(f"saving masks file to {conf.out_path}", flush=True)
     if conf.out_path.suffix == ".zarr":
         copytree(conf.tempdir / "out.zarr", conf.out_path)
     else:
