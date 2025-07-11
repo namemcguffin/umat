@@ -34,5 +34,8 @@ def run(conf: SignalsConf):
     print("determining region properties", flush=True)
     df = pd.DataFrame(regionprops_table(masks, imgs, properties=["label", *conf.props]))
 
+    for idx, chan in enumerate(conf.channels):
+        df.rename(columns={col: col.replace(f"-{idx}", f"-{chan}") for col in df.columns}, inplace=True)
+
     print(f"saving signals table to {conf.out_path}", flush=True)
     df.to_csv(conf.out_path, sep="\t", index=False)
