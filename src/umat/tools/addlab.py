@@ -1,7 +1,6 @@
 import numpy as np
-from h5py import Dataset
+from h5py import Dataset, Group
 from h5py import File as H5File
-from h5py import Group
 from roifile import ImagejRoi, roiread
 from skimage.draw import polygon2mask
 
@@ -9,7 +8,6 @@ from ..conf import AddLabelConf
 
 
 def run(conf: AddLabelConf):
-
     with H5File(conf.hdf5_path, "r+") as hf:
         grp = hf[conf.sample]
         if not isinstance(grp, Group):

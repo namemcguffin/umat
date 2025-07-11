@@ -2,9 +2,8 @@ import numpy as np
 from cellpose.io import logger_setup
 from cellpose.models import CellposeModel
 from cellpose.train import train_seg
-from h5py import Dataset
+from h5py import Dataset, Group
 from h5py import File as H5File
-from h5py import Group
 
 from ..conf import RetrainConf
 

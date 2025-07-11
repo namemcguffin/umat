@@ -102,7 +102,9 @@ def run(conf: SpotConf):
     # remove blanks from gene matrix, keep as obsm slot
     blank_filter = ad.var_names.str.startswith("Blank-")
     ad.obsm["blanks"] = pd.DataFrame(
-        ad[:, blank_filter].X, index=ad.obs_names, columns=ad.var_names[blank_filter]  # pyright: ignore
+        ad[:, blank_filter].X,  # pyright: ignore
+        index=ad.obs_names,
+        columns=ad.var_names[blank_filter],
     )
     ad = ad[:, ~blank_filter].copy()
 

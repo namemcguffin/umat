@@ -21,7 +21,6 @@ def r2m(cell: int | np.integer, geom: shp.MultiPolygon, shape: tuple[int, int]) 
 
 
 def process_zslice(df: pd.DataFrame, shape: tuple[int, int]) -> np.ndarray:
-
     row_iter = df.itertuples()
     row = next(row_iter)
     # for type cheker

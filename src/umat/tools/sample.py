@@ -14,19 +14,19 @@ def run(conf: SampleConf):
     cyt_arr = imread(cyt_path, aszarr=False)
 
     # sanity check re: sampling size vs image size
-    assert (
-        cyt_arr.shape[1] >= conf.width
-    ), f"cytoplasm image width {cyt_arr.shape[1]} is less than provided sample width {conf.width}"
-    assert (
-        cyt_arr.shape[1] >= conf.width
-    ), f"cytoplasm image height {cyt_arr.shape[0]} is less than provided sample height {conf.height}"
+    assert cyt_arr.shape[1] >= conf.width, (
+        f"cytoplasm image width {cyt_arr.shape[1]} is less than provided sample width {conf.width}"
+    )
+    assert cyt_arr.shape[1] >= conf.width, (
+        f"cytoplasm image height {cyt_arr.shape[0]} is less than provided sample height {conf.height}"
+    )
 
     nuc_path = Path(conf.inp_fmt.format(c=conf.nuc_pat))
     print(f"reading nuclear image from path {nuc_path}", flush=True)
     nuc_arr = imread(nuc_path, aszarr=False)
-    assert (
-        cyt_arr.shape == nuc_arr.shape
-    ), f"cytoplasm image shape {cyt_arr.shape[1]}x{cyt_arr.shape[0]} different from nuclear image shape {nuc_arr.shape[1]}x{nuc_arr.shape[0]}"
+    assert cyt_arr.shape == nuc_arr.shape, (
+        f"cytoplasm image shape {cyt_arr.shape[1]}x{cyt_arr.shape[0]} different from nuclear image shape {nuc_arr.shape[1]}x{nuc_arr.shape[0]}"
+    )
 
     with H5File(conf.out_path, "a") as hf:
         for i in range(conf.amount):

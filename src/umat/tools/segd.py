@@ -34,7 +34,6 @@ distributed_segmentation.get_block_crops = wgbc
 
 
 def run(conf: DistributedSegConf):
-
     logger_setup()
 
     # NOTE: not using context manager due to crashes during __exit__ call
