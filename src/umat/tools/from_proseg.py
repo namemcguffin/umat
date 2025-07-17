@@ -17,7 +17,7 @@ def r2m(cell: int | np.integer, geom: shp.MultiPolygon, shape: tuple[int, int]) 
         assert isinstance(pol, shp.Polygon), f"expected Polygon when iterating over MultiPolygon, got {pol.wkt}"
         val_polys.append(polygon2mask(shape, np.array(pol.exterior.coords)[:, [1, 0]]))
 
-    return (np.bitwise_or.reduce(val_polys, axis=0) * cell).astype(int)
+    return (np.logical_or.reduce(val_polys, axis=0) * cell).astype(int)
 
 
 def process_zslice(df: pd.DataFrame, shape: tuple[int, int]) -> np.ndarray:
