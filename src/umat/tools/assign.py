@@ -1,6 +1,8 @@
+from warnings import catch_warnings
+
 import geopandas as gpd
 import pandas as pd
-from anndata import AnnData
+from anndata import AnnData, ImplicitModificationWarning
 from scipy.sparse import csr_array
 
 from ..conf import AssignConf
@@ -59,7 +61,8 @@ def run(conf: AssignConf):
 
     print("constructing anndata object", flush=True)
 
-    ad = AnnData(mtx)
+    with catch_warnings(action="ignore", category=ImplicitModificationWarning):
+        ad = AnnData(mtx)
 
     # remove blanks from gene matrix, keep as obsm slot
     blank_filter = ad.var_names.str.startswith("Blank-")
