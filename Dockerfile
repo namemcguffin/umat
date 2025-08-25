@@ -19,7 +19,7 @@ run ["uv", "pip", "install", "-r", "requirements.txt"]
 run ["/.venv/bin/python", "-c", "from cellpose import models; models.CellposeModel()"]
 
 # install package
-copy ./src .
+copy ./src ./src 
 run ["uv", "pip", "install", "."]
 
 from base
